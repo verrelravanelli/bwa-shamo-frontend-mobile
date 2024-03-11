@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shamo/models/product_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shamo/models/user_model.dart';
+import 'package:shamo/providers/auth_provider.dart';
 import 'package:shamo/theme.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -45,6 +48,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserModel user = authProvider.user;
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundColor,
@@ -56,15 +62,15 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Row(
               children: [
                 ClipOval(
-                  child: Image.asset('assets/image_profile.png', width: 64),
+                  child: Image.network(user.profilePhotoUrl, width: 64),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Hallo, Alex", style: primaryTextStyle.copyWith(fontSize: 24, fontWeight: semiBold)),
-                      Text("@alexkeinn", style: subtitleTextStyle.copyWith(fontSize: 16)),
+                      Text("Hallo, ${user.name}", style: primaryTextStyle.copyWith(fontSize: 24, fontWeight: semiBold)),
+                      Text("@${user.username}", style: subtitleTextStyle.copyWith(fontSize: 16)),
                     ],
                   ),
                 ),
@@ -83,7 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     Widget menuItem(String text) {
       return Container(
-        margin: EdgeInsets.only(top: 16),
+        margin: const EdgeInsets.only(top: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -105,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text("Account", style: primaryTextStyle.copyWith(fontSize: 16, fontWeight: semiBold)),
               GestureDetector(
                 onTap: () {
@@ -115,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               menuItem("Your Orders"),
               menuItem("Help"),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Text("General", style: primaryTextStyle.copyWith(fontSize: 16, fontWeight: semiBold)),
               menuItem("Privacy & Policy"),
               menuItem("Term of Service"),
