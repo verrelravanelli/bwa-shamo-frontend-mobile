@@ -1,12 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo/providers/auth_provider.dart';
+import 'package:shamo/providers/cart_provider.dart';
+import 'package:shamo/providers/transaction_provider.dart';
 import 'package:shamo/theme.dart';
 import 'package:shamo/widgets/checkout_card.dart';
+import 'package:shamo/widgets/loading_button.dart';
 
-class CheckoutPage extends StatelessWidget {
+class CheckoutPage extends StatefulWidget {
   const CheckoutPage({super.key});
 
   @override
+  State<CheckoutPage> createState() => _CheckoutPageState();
+}
+
+class _CheckoutPageState extends State<CheckoutPage> {
+  bool isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+    TransactionProvider transactionProvider = Provider.of<TransactionProvider>(context);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleCheckout() async {
+      setState(() {
+        isLoading = true;
+      });
+
+      if (await transactionProvider.checkout(
+        authProvider.user.token,
+        cartProvider.carts,
+        cartProvider.totalPrice(),
+      )) {
+        cartProvider.carts.clear();
+        Navigator.pushNamedAndRemoveUntil(context, '/checkout-success', (route) => false);
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+
     PreferredSizeWidget header() {
       return AppBar(
         backgroundColor: backgroundColor,
@@ -33,8 +68,13 @@ class CheckoutPage extends StatelessWidget {
                     fontWeight: medium,
                   ),
                 ),
-                const CheckoutCard(),
-                const CheckoutCard(),
+                Column(
+                  children: cartProvider.carts
+                      .map(
+                        (cart) => CheckoutCard(cart: cart),
+                      )
+                      .toList(),
+                ),
               ],
             ),
           ),
@@ -55,7 +95,7 @@ class CheckoutPage extends StatelessWidget {
                     fontWeight: medium,
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Column(
@@ -76,7 +116,7 @@ class CheckoutPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -102,7 +142,7 @@ class CheckoutPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "Marsemoon",
+                          "Surabaya",
                           style: primaryTextStyle.copyWith(
                             fontWeight: medium,
                           ),
@@ -132,7 +172,7 @@ class CheckoutPage extends StatelessWidget {
                     fontWeight: medium,
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -143,7 +183,7 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "2 Items",
+                      "${cartProvider.totalItems()} Items",
                       style: primaryTextStyle.copyWith(
                         fontSize: 14,
                         fontWeight: medium,
@@ -151,7 +191,7 @@ class CheckoutPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -162,7 +202,7 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "\$575.96",
+                      "\$${cartProvider.totalPrice()}",
                       style: primaryTextStyle.copyWith(
                         fontSize: 14,
                         fontWeight: medium,
@@ -170,7 +210,7 @@ class CheckoutPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -189,12 +229,12 @@ class CheckoutPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
-                Divider(
+                const SizedBox(height: 12),
+                const Divider(
                   thickness: 1,
                   color: Color(0xff2E3141),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -203,7 +243,7 @@ class CheckoutPage extends StatelessWidget {
                       style: priceTextStyle.copyWith(fontWeight: semiBold),
                     ),
                     Text(
-                      "\$575.92",
+                      "\$${cartProvider.totalPrice()}",
                       style: priceTextStyle.copyWith(fontWeight: semiBold),
                     ),
                   ],
@@ -213,33 +253,33 @@ class CheckoutPage extends StatelessWidget {
           ),
           //Checkout Button
           SizedBox(height: defaultMargin),
-          Divider(
+          const Divider(
             thickness: 1,
             color: Color(0xff2E3141),
           ),
-          Container(
-            height: 50,
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(vertical: defaultMargin),
-            child: TextButton(
-              onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(context, '/checkout-success', (route) => false);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+          isLoading
+              ? const LoadingButton()
+              : Container(
+                  height: 50,
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(vertical: defaultMargin),
+                  child: TextButton(
+                    onPressed: handleCheckout,
+                    style: TextButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      "Checkout Now",
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: semiBold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                "Checkout Now",
-                style: primaryTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
-                ),
-              ),
-            ),
-          ),
         ],
       );
     }

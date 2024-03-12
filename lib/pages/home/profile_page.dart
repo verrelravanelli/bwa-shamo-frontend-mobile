@@ -30,6 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
       List<ProductModel> products = (jsonData['data']['data'] as List).map((e) => ProductModel.fromJson(e)).toList();
       if (products.isNotEmpty) {
         listData = products;
+        log(jsonEncode(listData));
         setState(() {
           loading = false;
         });

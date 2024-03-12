@@ -1,11 +1,17 @@
+import 'package:shamo/models/category_model.dart';
+import 'package:shamo/models/gallery_model.dart';
+
 class ProductModel {
   final int id;
   final String name;
-  final int price;
+  final double price;
   final String description;
   final String? tags;
   final int categoriesId;
-  final List<Galleries>? galleries;
+  final CategoryModel category;
+  final List<Galleries> galleries;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   ProductModel({
     required this.id,
@@ -15,38 +21,38 @@ class ProductModel {
     required this.tags,
     required this.categoriesId,
     required this.galleries,
+    required this.category,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
-    List<dynamic>? tempListItem = json['galleries'] != null ? json['galleries'] as List : null;
-    List<Galleries>? data;
-    if (tempListItem != null) {
-      data = tempListItem.map((e) => Galleries.fromJson(e)).toList();
-    }
     return ProductModel(
       id: json['id'],
       name: json['name'],
-      price: json['price'],
+      price: double.parse(json['price'].toString()),
       description: json['description'],
       tags: json['tags'],
       categoriesId: json['categories_id'],
-      galleries: data,
+      galleries: (json['galleries'] as List<dynamic>).map((gallery) => Galleries.fromJson(gallery)).toList(),
+      category: CategoryModel.fromJson(json['category']),
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
-}
 
-class Galleries {
-  final int id;
-  final int products_id;
-  final String url;
-
-  Galleries({
-    required this.id,
-    required this.products_id,
-    required this.url,
-  });
-
-  factory Galleries.fromJson(Map<String, dynamic> json) {
-    return Galleries(id: json['id'], products_id: json['products_id'], url: json['url']);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'description': description,
+      'tags': tags,
+      'categories_id': categoriesId,
+      'galleries': galleries.map((e) => e.toJson()).toList(),
+      'category': category.toJson(),
+      'created_at': createdAt.toString(),
+      'updated_at': updatedAt.toString(),
+    };
   }
 }

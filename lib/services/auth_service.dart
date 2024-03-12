@@ -48,7 +48,7 @@ class AuthService {
   }) async {
     var url = '$baseUrl/login';
     var headers = {
-      'Content-Type': 'application/json',
+      HttpHeaders.contentTypeHeader: 'application/json',
     };
     var body = jsonEncode({
       'email': email,

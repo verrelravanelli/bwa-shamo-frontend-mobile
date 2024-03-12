@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo/providers/wishlist_provider.dart';
 import 'package:shamo/theme.dart';
 import 'package:shamo/widgets/wishlist_card.dart';
 
@@ -7,11 +9,13 @@ class WishlistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundColor,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Favorite Shoes',
         ),
         elevation: 0,
@@ -31,7 +35,7 @@ class WishlistPage extends StatelessWidget {
                 'assets/image_wishlist.png',
                 width: 74,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 23,
               ),
               Text(
@@ -41,14 +45,14 @@ class WishlistPage extends StatelessWidget {
                   fontWeight: medium,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Text(
                 'Let\'s find your favorite shoes',
                 style: secondaryTextStyle,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Container(
@@ -56,7 +60,7 @@ class WishlistPage extends StatelessWidget {
                 child: TextButton(
                   onPressed: () {},
                   style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 10,
                       horizontal: 24,
                     ),
@@ -88,11 +92,11 @@ class WishlistPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               horizontal: defaultMargin,
             ),
-            children: [
-              WishlistCard(),
-              WishlistCard(),
-              WishlistCard(),
-            ],
+            children: wishlistProvider.wishlist
+                .map(
+                  (product) => WishlistCard(product: product),
+                )
+                .toList(),
           ),
         ),
       );
@@ -104,7 +108,7 @@ class WishlistPage extends StatelessWidget {
           child: header(),
         ),
         //emptyWishlist(),
-        content(),
+        wishlistProvider.wishlist.isEmpty ? emptyWishlist() : content(),
       ],
     );
   }

@@ -2,15 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shamo/models/user_model.dart';
 import 'package:shamo/providers/auth_provider.dart';
+import 'package:shamo/providers/product_provider.dart';
 import 'package:shamo/theme.dart';
 import 'package:shamo/widgets/product_tile.dart';
 import 'package:shamo/widgets/products_card_item.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   Provider.of<ProductProvider>(context, listen: false).getProducts();
+    // });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    //Auth Provider
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     UserModel user = authProvider.user;
 
@@ -72,10 +88,10 @@ class HomePage extends StatelessWidget {
                 width: defaultMargin,
               ),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   right: 16,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: primaryColor,
@@ -89,10 +105,10 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   right: 16,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: transparentColor,
@@ -107,10 +123,10 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   right: 16,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: transparentColor,
@@ -125,10 +141,10 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   right: 16,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: transparentColor,
@@ -143,10 +159,10 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   right: 16,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: transparentColor,
@@ -185,7 +201,7 @@ class HomePage extends StatelessWidget {
 
     Widget popularProductsItem() {
       return Container(
-        margin: EdgeInsets.only(
+        margin: const EdgeInsets.only(
           top: 14,
         ),
         child: SingleChildScrollView(
@@ -195,12 +211,29 @@ class HomePage extends StatelessWidget {
               SizedBox(
                 width: defaultMargin,
               ),
-              Row(
-                children: [
-                  ProductsCardItem(),
-                  ProductsCardItem(),
-                  ProductsCardItem(),
-                ],
+              // Row(
+              //   children: productProvider.products
+              //       .map(
+              //         (product) => ProductsCardItem(product: product),
+              //       )
+              //       .toList(),
+              // ),
+              Consumer<ProductProvider>(
+                builder: (context, value, child) {
+                  if (value.isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  }
+                  final products = value.products;
+                  return Row(
+                    children: products
+                        .map(
+                          (product) => ProductsCardItem(product: product),
+                        )
+                        .toList(),
+                  );
+                },
               ),
             ],
           ),
@@ -227,16 +260,32 @@ class HomePage extends StatelessWidget {
 
     Widget newArrivalsItem() {
       return Container(
-        margin: EdgeInsets.only(
+        margin: const EdgeInsets.only(
           top: 14,
         ),
-        child: Column(
-          children: [
-            ProductTile(),
-            ProductTile(),
-            ProductTile(),
-            ProductTile(),
-          ],
+        // child: Column(
+        //   children: productProvider.products
+        //       .map(
+        //         (product) => ProductTile(product: product),
+        //       )
+        //       .toList(),
+        // ),
+        child: Consumer<ProductProvider>(
+          builder: (context, value, child) {
+            if (value.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              );
+            }
+            final products = value.products;
+            return Column(
+              children: products
+                  .map(
+                    (product) => ProductTile(product: product),
+                  )
+                  .toList(),
+            );
+          },
         ),
       );
     }

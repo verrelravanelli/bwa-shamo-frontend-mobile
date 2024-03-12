@@ -32,11 +32,11 @@ class _MainPageState extends State<MainPage> {
 
     Widget customBottomNav() {
       return ClipRRect(
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(30),
         ),
         child: BottomAppBar(
-          shape: CircularNotchedRectangle(),
+          shape: const CircularNotchedRectangle(),
           notchMargin: 12,
           clipBehavior: Clip.antiAlias,
           child: BottomNavigationBar(
@@ -51,56 +51,56 @@ class _MainPageState extends State<MainPage> {
             items: [
               BottomNavigationBarItem(
                 icon: Container(
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                     top: 20,
                     bottom: 10,
                   ),
                   child: Image.asset(
                     'assets/icon_home.png',
                     width: 21,
-                    color: currentIndex == 0 ? primaryColor : Color(0xff808191),
+                    color: currentIndex == 0 ? primaryColor : const Color(0xff808191),
                   ),
                 ),
                 label: '',
               ),
               BottomNavigationBarItem(
                 icon: Container(
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                     top: 20,
                     bottom: 10,
                   ),
                   child: Image.asset(
                     'assets/icon_chat.png',
                     width: 20,
-                    color: currentIndex == 1 ? primaryColor : Color(0xff808191),
+                    color: currentIndex == 1 ? primaryColor : const Color(0xff808191),
                   ),
                 ),
                 label: '',
               ),
               BottomNavigationBarItem(
                 icon: Container(
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                     top: 20,
                     bottom: 10,
                   ),
                   child: Image.asset(
                     'assets/icon_wishlist.png',
                     width: 20,
-                    color: currentIndex == 2 ? primaryColor : Color(0xff808191),
+                    color: currentIndex == 2 ? primaryColor : const Color(0xff808191),
                   ),
                 ),
                 label: '',
               ),
               BottomNavigationBarItem(
                 icon: Container(
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                     top: 20,
                     bottom: 10,
                   ),
                   child: Image.asset(
                     'assets/icon_profile.png',
                     width: 18,
-                    color: currentIndex == 3 ? primaryColor : Color(0xff808191),
+                    color: currentIndex == 3 ? primaryColor : const Color(0xff808191),
                   ),
                 ),
                 label: '',
@@ -114,15 +114,15 @@ class _MainPageState extends State<MainPage> {
     Widget body() {
       switch (currentIndex) {
         case 0:
-          return HomePage();
+          return const HomePage();
         case 1:
-          return ChatPage();
+          return const ChatPage();
         case 2:
-          return WishlistPage();
+          return const WishlistPage();
         case 3:
-          return ProfilePage();
+          return const ProfilePage();
         default:
-          return HomePage();
+          return const HomePage();
       }
     }
 
