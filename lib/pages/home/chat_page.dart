@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo/models/message_model.dart';
+import 'package:shamo/providers/auth_provider.dart';
+import 'package:shamo/providers/page_provider.dart';
+import 'package:shamo/services/message_service.dart';
 import 'package:shamo/theme.dart';
 import 'package:shamo/widgets/chat_tile.dart';
 
@@ -7,6 +12,9 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    PageProvider pageProvider = Provider.of<PageProvider>(context);
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundColor,
@@ -35,7 +43,7 @@ class ChatPage extends StatelessWidget {
                 'assets/icon_headset.png',
                 width: 80,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text(
@@ -45,22 +53,24 @@ class ChatPage extends StatelessWidget {
                   fontWeight: medium,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Text(
                 'You have never done a transaction',
                 style: secondaryTextStyle,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Container(
+              SizedBox(
                 height: 44,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    pageProvider.currentIndex = 0;
+                  },
                   style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 10,
                     ),
@@ -85,20 +95,31 @@ class ChatPage extends StatelessWidget {
     }
 
     Widget content() {
-      return Expanded(
-        child: Container(
-          width: double.infinity,
-          color: backgroundColor3,
-          child: ListView(
-            padding: EdgeInsets.symmetric(
-              horizontal: defaultMargin,
-            ),
-            children: [
-              ChatTile(),
-              ChatTile(),
-            ],
-          ),
-        ),
+      return StreamBuilder<List<MessageModel>>(
+        stream: MessageService().getMessagesByUserId(authProvider.user.id),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return emptyChat();
+            }
+            return Expanded(
+              child: Container(
+                width: double.infinity,
+                color: backgroundColor3,
+                child: ListView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: defaultMargin,
+                  ),
+                  children: [
+                    ChatTile(message: snapshot.data![snapshot.data!.length - 1]),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return emptyChat();
+          }
+        },
       );
     }
 

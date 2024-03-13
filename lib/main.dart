@@ -1,6 +1,8 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shamo/firebase_options.dart';
 import 'package:shamo/pages/cart_page.dart';
 import 'package:shamo/pages/checkout_page.dart';
 import 'package:shamo/pages/checkout_success_page.dart';
@@ -13,18 +15,24 @@ import 'package:shamo/pages/sign_up_page.dart';
 import 'package:shamo/pages/splash_page.dart';
 import 'package:shamo/providers/auth_provider.dart';
 import 'package:shamo/providers/cart_provider.dart';
+import 'package:shamo/providers/page_provider.dart';
 import 'package:shamo/providers/product_provider.dart';
 import 'package:shamo/providers/transaction_provider.dart';
 import 'package:shamo/providers/wishlist_provider.dart';
-import 'theme.dart';
 
-void main() => runApp(
-      DevicePreview(
-        enabled: true,
-        builder: (context) => const MyApp(), // Wrap your app
-      ),
-      //MyApp(),
-    );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => const MyApp(), // Wrap your app
+    ),
+    //MyApp(),
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -48,6 +56,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => TransactionProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => PageProvider(),
+        ),
       ],
       child: MaterialApp(
         locale: DevicePreview.locale(context),
@@ -56,9 +67,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => const SplashPage(),
           '/sign-in': (context) => const SignInPage(),
-          '/sign-up': (context) => SignUpPage(),
+          '/sign-up': (context) => const SignUpPage(),
           '/home': (context) => const MainPage(),
-          '/detail-chat': (context) => const DetailChatPage(),
           '/edit-profile': (context) => const EditProfilePage(),
           '/cart': (context) => const CartPage(),
           '/checkout': (context) => const CheckoutPage(),

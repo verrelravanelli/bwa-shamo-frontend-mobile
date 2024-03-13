@@ -2,16 +2,16 @@ import 'package:shamo/models/category_model.dart';
 import 'package:shamo/models/gallery_model.dart';
 
 class ProductModel {
-  final int id;
-  final String name;
-  final double price;
-  final String description;
-  final String? tags;
-  final int categoriesId;
-  final CategoryModel category;
-  final List<Galleries> galleries;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  int id;
+  String name;
+  double price;
+  String description;
+  String? tags;
+  int categoriesId;
+  CategoryModel category;
+  List<Galleries> galleries;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   ProductModel({
     required this.id,
@@ -56,3 +56,17 @@ class ProductModel {
     };
   }
 }
+
+// class UninitializedProductModel extends ProductModel {
+//   UninitializedProductModel(
+//       {required super.id,
+//       required super.name,
+//       required super.price,
+//       required super.description,
+//       required super.tags,
+//       required super.categoriesId,
+//       required super.galleries,
+//       required super.category,
+//       required super.createdAt,
+//       required super.updatedAt});
+// }

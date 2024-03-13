@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shamo/models/cart_model.dart';
-import 'package:shamo/models/product_model.dart';
 import 'package:shamo/providers/cart_provider.dart';
 import 'package:shamo/theme.dart';
 

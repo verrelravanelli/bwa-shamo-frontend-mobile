@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:shamo/models/message_model.dart';
+import 'package:shamo/pages/detail_chat_page.dart';
 import 'package:shamo/theme.dart';
 
 class ChatTile extends StatelessWidget {
-  const ChatTile({Key? key}) : super(key: key);
+  final MessageModel message;
+  const ChatTile({Key? key, required this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/detail-chat');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DetailChatPage(),
+          ),
+        );
       },
       child: Container(
-        margin: EdgeInsets.only(
+        margin: const EdgeInsets.only(
           top: 33,
         ),
         child: Column(
@@ -22,7 +30,7 @@ class ChatTile extends StatelessWidget {
                   'assets/image_shop_logo.png',
                   width: 54,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
                 Expanded(
@@ -36,7 +44,7 @@ class ChatTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Good night, This item is on...',
+                        message.message,
                         style: secondaryTextStyle.copyWith(
                           fontWeight: light,
                         ),
@@ -46,17 +54,17 @@ class ChatTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Now',
+                  message.updatedAt.toString(),
                   style: secondaryTextStyle.copyWith(
                     fontSize: 10,
                   ),
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
-            Divider(
+            const Divider(
               thickness: 1,
               color: Color(0xff2B2939),
             )
